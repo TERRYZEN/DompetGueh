@@ -1,0 +1,44 @@
+name: dompetgueh_flutter
+description: DompetGueh offline dengan antarmuka Flutter dan penyimpanan privat Android.
+publish_to: none
+version: 2.0.0+2
+
+environment:
+  sdk: '>=3.9.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/fonts/dmsans-OFL.txt
+    - assets/fonts/manrope-OFL.txt
+  fonts:
+    - family: DMSans
+      fonts:
+        - asset: assets/fonts/font-0.ttf
+          weight: 400
+        - asset: assets/fonts/font-1.ttf
+          weight: 500
+        - asset: assets/fonts/font-2.ttf
+          weight: 600
+        - asset: assets/fonts/font-3.ttf
+          weight: 700
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/font-4.ttf
+          weight: 400
+        - asset: assets/fonts/font-5.ttf
+          weight: 500
+        - asset: assets/fonts/font-6.ttf
+          weight: 600
+        - asset: assets/fonts/font-7.ttf
+          weight: 700
+        - asset: assets/fonts/font-8.ttf
+          weight: 800
