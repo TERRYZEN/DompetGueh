@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
 import 'core/controller.dart';
 import 'ui/auth.dart';
@@ -22,6 +23,14 @@ class DompetGuehApp extends StatelessWidget {
       final c = Palette(controller.dark);
       return MaterialApp(
         title: 'DompetGueh',
+        themeAnimationDuration: Duration.zero,
+        locale: const Locale('id', 'ID'),
+        supportedLocales: const [Locale('id', 'ID')],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
         debugShowCheckedModeBanner: false,
         theme: appTheme(false),
         darkTheme: appTheme(true),

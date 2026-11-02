@@ -10,9 +10,27 @@ class Palette {
   Color get bg => dark ? const Color(0xff0e1120) : const Color(0xfff6f7fb);
   Color get surface => dark ? const Color(0xff171b2e) : Colors.white;
   Color get text => dark ? const Color(0xffe9ecf7) : const Color(0xff20243a);
-  Color get muted => dark ? const Color(0xff98a0b8) : const Color(0xff8a90a5);
+  Color get muted => dark ? const Color(0xff98a0b8) : const Color(0xff69758b);
   Color get line => dark ? const Color(0xff262b44) : const Color(0xffedf0f6);
   Color get soft => dark ? const Color(0xff232a4d) : const Color(0xffefedff);
+  Color get glass => dark
+      ? const Color.fromRGBO(39, 55, 74, .72)
+      : const Color.fromRGBO(255, 255, 255, .66);
+  Color get glassInset => dark
+      ? const Color.fromRGBO(70, 83, 105, .18)
+      : const Color.fromRGBO(255, 255, 255, .42);
+  Color get glassBorder => dark
+      ? const Color.fromRGBO(184, 203, 227, .14)
+      : const Color.fromRGBO(255, 255, 255, .82);
+  Color get income => dark ? const Color(0xff3cdbac) : const Color(0xff11825e);
+  Color get expense => dark ? const Color(0xffff7891) : const Color(0xffcc4059);
+  Color get incomeBorder => dark
+      ? const Color.fromRGBO(60, 219, 172, .5)
+      : const Color.fromRGBO(26, 166, 120, .5);
+  Color get expenseBorder => dark
+      ? const Color.fromRGBO(255, 120, 145, .5)
+      : const Color.fromRGBO(224, 75, 103, .5);
+  Color get track => dark ? const Color(0xff232843) : line;
   Color get field => dark ? const Color(0xff12162a) : Colors.white;
 }
 

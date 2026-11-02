@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/models.dart';
 import 'common.dart';
 import 'theme.dart';
+import 'visuals.dart';
 
 class DashboardView extends StatelessWidget {
   final FinanceData data;
@@ -15,334 +16,530 @@ class DashboardView extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final c = context.palette;
-    final cards = [
-      _StatCard(
-        title: 'Anggaran Bulanan',
-        icon: Icons.receipt_long_outlined,
-        color: primary,
-        amount: hidden ? 'Rp••••••' : rupiah(data.budget),
-        amountKey: const Key('budget-value'),
-        bottom: Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 8,
-          children: [
-            Text(
-              'Batas pengeluaran lu',
-              style: TextStyle(fontSize: 12, color: c.muted),
-            ),
-            TextButton(
-              key: const Key('edit-budget'),
-              onPressed: onBudget,
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: const Size(0, 24),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    final c = context.palette, w = MediaQuery.sizeOf(context).width;
+    final mobile = w <= 760, tiny = w < 360;
+    final budgetSize = mobile
+        ? (w * .08).clamp(27.0, 40.0)
+        : (w * .042).clamp(32.0, 52.0);
+    final remainingSize = mobile ? 20.0 : (w * .022).clamp(19.0, 26.0);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        GlassSurface(
+          key: const Key('finance-overview'),
+          radius: mobile ? 26 : 30,
+          padding: EdgeInsets.all(
+            tiny
+                ? 16
+                : mobile
+                ? 20
+                : 30,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                key: const Key('budget-heading'),
+                children: [
+                  Container(
+                    width: mobile ? 34 : 40,
+                    height: mobile ? 34 : 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: c.soft,
+                      borderRadius: BorderRadius.circular(mobile ? 11 : 13),
+                    ),
+                    child: const DgIcon(DgSymbol.wallet, color: primary),
+                  ),
+                  SizedBox(width: mobile ? 10 : 12),
+                  Expanded(
+                    child: Text(
+                      'ANGGARAN BULANAN',
+                      style: TextStyle(
+                        fontSize: mobile ? 11 : 13,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: mobile ? 0.8 : 1.3,
+                        color: c.muted,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  GestureDetector(
+                    onHorizontalDragUpdate: (_) {},
+                    child: PressScale(
+                      child: SizedBox(
+                        width: mobile ? 40 : null,
+                        height: mobile ? 40 : 44,
+                        child: OutlinedButton(
+                          key: const Key('edit-budget'),
+                          onPressed: onBudget,
+                          style: OutlinedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: mobile ? 8 : 12,
+                            ),
+                            minimumSize: Size(
+                              mobile ? 40 : 0,
+                              mobile ? 40 : 44,
+                            ),
+                            backgroundColor: c.glassInset,
+                            side: BorderSide(color: c.line),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              DgIcon(DgSymbol.edit, size: 17, color: c.muted),
+                              if (!mobile) ...[
+                                const SizedBox(width: 7),
+                                Text(
+                                  'Ubah',
+                                  style: TextStyle(
+                                    color: c.muted,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              child: const Text(
-                'Tambahkan / ubah ↗',
-                style: TextStyle(fontSize: 11),
+              SizedBox(height: mobile ? 20 : 22),
+              SizedBox(
+                height: budgetSize * 1.25,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      hidden ? 'Rp••••••' : rupiah(data.budget),
+                      key: const Key('budget-value'),
+                      style: heading(
+                        budgetSize,
+                      ).copyWith(height: 1.25, letterSpacing: -1.5),
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: mobile ? 22 : 26),
+              Container(
+                key: const Key('remaining-card'),
+                padding: EdgeInsets.symmetric(
+                  horizontal: mobile ? 16 : 22,
+                  vertical: mobile ? 16 : 20,
+                ),
+                decoration: BoxDecoration(
+                  color: c.glassInset,
+                  border: Border.all(color: c.glassBorder),
+                  borderRadius: BorderRadius.circular(mobile ? 17 : 20),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (tiny) ...[
+                      Text(
+                        'Sisa Anggaran',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: c.muted,
+                          height: 1.3,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      _RemainingValue(
+                        data: data,
+                        hidden: hidden,
+                        size: remainingSize,
+                        align: Alignment.centerLeft,
+                      ),
+                    ] else
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: mobile ? 3 : 0),
+                            child: Text(
+                              'Sisa Anggaran',
+                              style: TextStyle(
+                                fontSize: mobile ? 12 : 13,
+                                height: 4 / 3,
+                                color: c.muted,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: mobile ? 12 : 16),
+                          Expanded(
+                            child: _RemainingValue(
+                              data: data,
+                              hidden: hidden,
+                              size: remainingSize,
+                            ),
+                          ),
+                        ],
+                      ),
+                    const SizedBox(height: 15),
+                    BudgetProgress(
+                      key: const Key('budget-progress'),
+                      percent: data.percent,
+                      hidden: hidden,
+                      overBudget: data.remaining < 0,
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 18,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 3, bottom: 1),
+                        child: Text(
+                          hidden
+                              ? '•••% anggaran terpakai'
+                              : '${data.percent.round()}% anggaran terpakai',
+                          key: const Key('progress-label'),
+                          style: TextStyle(
+                            fontSize: 11,
+                            height: 14 / 11,
+                            color: c.muted,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: mobile ? 12 : 16),
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: _Metric(
+                        income: true,
+                        value: data.totalIncome,
+                        count: data.incomes.length,
+                      ),
+                    ),
+                    SizedBox(width: mobile ? 10 : 16),
+                    Expanded(
+                      child: _Metric(
+                        income: false,
+                        value: data.totalExpense,
+                        count: data.expenses.length,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      _StatCard(
-        title: 'Total Pemasukan',
-        icon: Icons.south_rounded,
-        color: green,
-        amount: rupiah(data.totalIncome),
-        amountKey: const Key('income-value'),
-        bottom: _Status('${data.incomes.length} pemasukan tercatat', green),
-      ),
-      _StatCard(
-        title: 'Total Pengeluaran',
-        icon: Icons.north_east_rounded,
-        color: orange,
-        amount: rupiah(data.totalExpense),
-        amountKey: const Key('expense-value'),
-        bottom: _Status('${data.expenses.length} transaksi tercatat', orange),
-      ),
-      _StatCard(
-        title: 'Sisa Anggaran',
-        icon: Icons.trending_up,
-        color: green,
-        amount: hidden ? 'Rp••••••' : rupiah(data.remaining),
-        amountKey: const Key('remaining-value'),
-        valueColor: !hidden && data.remaining < 0
-            ? const Color(0xffdf5967)
-            : null,
-        bottom: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _Track(
-              data.percent / 100,
-              data.remaining < 0 ? const Color(0xffdf5967) : primary,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              hidden
-                  ? '•••% anggaran terpakai'
-                  : '${data.percent.round()}% anggaran terpakai',
-              style: TextStyle(fontSize: 12, color: c.muted),
-            ),
-          ],
-        ),
-      ),
-      _StatCard(
-        title: 'Uang Keluar',
-        icon: Icons.diamond_outlined,
-        color: primary,
-        amount: rupiah(data.totalExpense),
-        amountKey: const Key('spent-value'),
-        bottom: Text(
-          'Jumlah uang yang telah dikeluarkan',
-          style: TextStyle(fontSize: 12, color: c.muted),
-        ),
-      ),
-    ];
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final columns = constraints.maxWidth >= 1050
-            ? 3
-            : constraints.maxWidth >= 650
-            ? 2
-            : 1;
-        final width = (constraints.maxWidth - (columns - 1) * 12) / columns;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: cards
-                  .map((w) => SizedBox(width: width, child: w))
-                  .toList(),
-            ),
-            const SizedBox(height: 22),
-            _Categories(data),
-          ],
-        );
-      },
+        const SizedBox(height: 22),
+        CategoriesPanel(data: data),
+      ],
     );
   }
 }
 
-class _StatCard extends StatelessWidget {
-  final String title, amount;
-  final IconData icon;
-  final Color color;
-  final Color? valueColor;
-  final Widget bottom;
-  final Key amountKey;
-  const _StatCard({
-    required this.title,
-    required this.amount,
-    required this.icon,
-    required this.color,
-    required this.bottom,
-    required this.amountKey,
-    this.valueColor,
+class _RemainingValue extends StatelessWidget {
+  final FinanceData data;
+  final bool hidden;
+  final double size;
+  final Alignment align;
+  const _RemainingValue({
+    required this.data,
+    required this.hidden,
+    required this.size,
+    this.align = Alignment.centerRight,
   });
   @override
-  Widget build(BuildContext context) => Panel(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
+  Widget build(BuildContext context) => SizedBox(
+    height: size * 1.35,
+    child: Align(
+      alignment: align,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: align,
+        child: Text(
+          hidden ? 'Rp••••••' : rupiah(data.remaining),
+          key: const Key('remaining-value'),
+          style: heading(
+            size,
+            color: !hidden && data.remaining < 0
+                ? context.palette.expense
+                : null,
+          ).copyWith(height: 1.35, letterSpacing: 0),
+        ),
+      ),
+    ),
+  );
+}
+
+class _Metric extends StatefulWidget {
+  final bool income;
+  final int value, count;
+  const _Metric({
+    required this.income,
+    required this.value,
+    required this.count,
+  });
+  @override
+  State<_Metric> createState() => _MetricState();
+}
+
+class _MetricState extends State<_Metric> {
+  bool hover = false;
+  @override
+  Widget build(BuildContext context) {
+    final c = context.palette,
+        w = MediaQuery.sizeOf(context).width,
+        mobile = w <= 760,
+        tiny = w < 360;
+    final color = widget.income ? c.income : c.expense;
+    final size = mobile
+        ? (w * .04).clamp(15.0, 22.0)
+        : (w * .026).clamp(20.0, 30.0);
+    return MouseRegion(
+      onEnter: (_) => setState(() => hover = true),
+      onExit: (_) => setState(() => hover = false),
+      child: AnimatedContainer(
+        key: Key(widget.income ? 'income-card' : 'expense-card'),
+        duration: MediaQuery.disableAnimationsOf(context)
+            ? Duration.zero
+            : const Duration(milliseconds: 250),
+        curve: cssEase,
+        transform: Matrix4.translationValues(0, hover ? -2 : 0, 0),
+        padding: EdgeInsets.symmetric(
+          horizontal: tiny
+              ? 10
+              : mobile
+              ? 13
+              : 22,
+          vertical: tiny
+              ? 14
+              : mobile
+              ? 15
+              : 20,
+        ),
+        decoration: BoxDecoration(
+          color: c.glassInset,
+          border: Border.all(
+            color: widget.income ? c.incomeBorder : c.expenseBorder,
+          ),
+          borderRadius: BorderRadius.circular(mobile ? 18 : 20),
+          boxShadow: hover
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 25,
+                    offset: const Offset(0, 10),
+                  ),
+                ]
+              : null,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: context.palette.muted,
+            Row(
+              children: [
+                Container(
+                  width: 7,
+                  height: 7,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: color,
+                  ),
+                ),
+                SizedBox(width: mobile ? 6 : 8),
+                Expanded(
+                  child: Text(
+                    widget.income ? 'Total Pemasukan' : 'Total Pengeluaran',
+                    style: TextStyle(
+                      fontSize: mobile ? 10 : 12,
+                      height: 1.3,
+                      fontWeight: FontWeight.w500,
+                      color: c.muted,
+                    ),
+                  ),
+                ),
+                if (!mobile)
+                  Text(
+                    widget.income ? '↙' : '↗',
+                    style: TextStyle(
+                      fontSize: 19,
+                      color: c.muted.withValues(alpha: 0.65),
+                    ),
+                  ),
+              ],
+            ),
+            SizedBox(height: mobile ? 14 : 12),
+            SizedBox(
+              height: size * 1.35,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    rupiah(widget.value),
+                    key: Key(widget.income ? 'income-value' : 'expense-value'),
+                    style: heading(size, color: color).copyWith(height: 1.35),
+                  ),
                 ),
               ),
             ),
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: .09),
-                borderRadius: BorderRadius.circular(10),
+            const SizedBox(height: 7),
+            Text(
+              '${widget.count} ${widget.income ? 'pemasukan' : 'transaksi'} tercatat',
+              style: TextStyle(
+                fontSize: mobile ? 10 : 11,
+                height: mobile ? 1.5 : 1.3,
+                color: c.muted,
               ),
-              child: Icon(icon, color: color, size: 18),
             ),
           ],
         ),
-        const SizedBox(height: 12),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              amount,
-              key: amountKey,
-              style: heading(25, color: valueColor),
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        bottom,
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }
 
-class _Status extends StatelessWidget {
-  final String text;
-  final Color color;
-  const _Status(this.text, this.color);
-  @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Container(
-        width: 6,
-        height: 6,
-        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-      ),
-      const SizedBox(width: 8),
-      Flexible(
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 12, color: context.palette.muted),
-        ),
-      ),
-    ],
-  );
-}
-
-class _Track extends StatelessWidget {
-  final double value;
-  final Color color;
-  const _Track(this.value, this.color);
-  @override
-  Widget build(BuildContext context) => ClipRRect(
-    borderRadius: BorderRadius.circular(10),
-    child: Container(
-      height: 5,
-      color: context.palette.line,
-      alignment: Alignment.centerLeft,
-      child: FractionallySizedBox(
-        widthFactor: value.clamp(0, 1),
-        child: ColoredBox(color: color),
-      ),
-    ),
-  );
-}
-
-class _Categories extends StatelessWidget {
+class CategoriesPanel extends StatelessWidget {
   final FinanceData data;
-  const _Categories(this.data);
+  const CategoriesPanel({super.key, required this.data});
   @override
   Widget build(BuildContext context) {
     final c = context.palette;
-    final amounts = <String, int>{};
+    final totals = <String, int>{};
     for (final e in data.expenses) {
-      amounts.update(e.category, (v) => v + e.amount, ifAbsent: () => e.amount);
+      totals.update(e.category, (v) => v + e.amount, ifAbsent: () => e.amount);
     }
-    final entries = amounts.entries.toList()
+    final entries = totals.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     return Panel(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 17),
+      key: const Key('category-panel'),
+      padding: EdgeInsets.symmetric(
+        horizontal: MediaQuery.sizeOf(context).width <= 760 ? 14 : 23,
+        vertical: MediaQuery.sizeOf(context).width <= 760 ? 17 : 23,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
-              Expanded(child: Text('Ringkasan Kategori', style: heading(16))),
-              const Icon(Icons.donut_large_rounded, size: 17, color: primary),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Ringkasan Kategori',
+                      style: heading(16).copyWith(
+                        fontWeight: FontWeight.w700,
+                        height: 22 / 16,
+                        letterSpacing: -.3,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Ke mana uang lu pergi?',
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 17 / 13,
+                        color: c.muted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.radio_button_checked, size: 18, color: c.muted),
             ],
           ),
-          const SizedBox(height: 5),
-          Text(
-            'Ke mana uang lu pergi?',
-            style: TextStyle(fontSize: 12, color: c.muted),
-          ),
-          const SizedBox(height: 22),
-          ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 110),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+          const SizedBox(height: 17),
+          if (entries.isEmpty)
+            Text(
+              'Ringkasan akan muncul setelah kamu menambahkan transaksi.',
+              style: TextStyle(fontSize: 12, height: 4 / 3, color: c.muted),
+            ),
+          for (var i = 0; i < entries.length; i++) ...[
+            if (i > 0) const SizedBox(height: 18),
+            Row(
               children: [
-                if (entries.isEmpty)
-                  Text(
-                    'Ringkasan akan muncul setelah kamu menambahkan transaksi.',
-                    style: TextStyle(fontSize: 12, color: c.muted),
-                  ),
-                ...entries.map((e) {
-                  final style =
-                      categoryStyles[e.key] ?? categoryStyles['Lainnya']!;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 18),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Icon(style.icon, size: 15, color: style.color),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                e.key,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            Flexible(
-                              child: Text(
-                                rupiah(e.value),
-                                textAlign: TextAlign.right,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        _Track(
-                          data.totalExpense > 0
-                              ? e.value / data.totalExpense
-                              : 0,
-                          style.color,
-                        ),
-                      ],
+                Text(
+                  categorySymbols[entries[i].key] ?? '✦',
+                  style: const TextStyle(fontSize: 11, height: 14 / 11),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    entries[i].key,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      height: 14 / 11,
+                      fontWeight: FontWeight.w600,
                     ),
-                  );
-                }),
+                  ),
+                ),
+                Text(
+                  rupiah(entries[i].value),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    height: 14 / 11,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ],
             ),
-          ),
-          Divider(color: c.line, height: 24),
+            const SizedBox(height: 8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                height: 5,
+                color: c.dark ? c.track : const Color(0xfff2f3f8),
+                alignment: Alignment.centerLeft,
+                child: FractionallySizedBox(
+                  widthFactor: data.totalExpense > 0
+                      ? entries[i].value / data.totalExpense
+                      : 0,
+                  child: Container(
+                    height: 5,
+                    color:
+                        (categoryStyles[entries[i].key] ??
+                                categoryStyles['Lainnya']!)
+                            .color,
+                  ),
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 24),
+          Container(height: 1, color: c.line),
+          const SizedBox(height: 17),
           Row(
             children: [
               Container(
-                width: 6,
-                height: 6,
+                width: 7,
+                height: 7,
                 decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
                   color: primary,
+                  shape: BoxShape.circle,
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   'Total semua kategori',
-                  style: TextStyle(fontSize: 11, color: c.muted),
+                  style: TextStyle(fontSize: 10, height: 1.3, color: c.muted),
                 ),
               ),
               Text(
                 rupiah(data.totalExpense),
                 style: const TextStyle(
                   fontSize: 12,
+                  height: 4 / 3,
                   fontWeight: FontWeight.w700,
-                  color: primary,
                 ),
               ),
             ],

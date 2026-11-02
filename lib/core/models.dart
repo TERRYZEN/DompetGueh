@@ -30,7 +30,7 @@ String groupDigits(String value) => value.replaceAllMapped(
   (m) => '${m[1]}.',
 );
 String rupiah(num value) =>
-    '${value < 0 ? '-' : ''}Rp${groupDigits(value.abs().round().toString())}';
+    '${value < 0 ? '-' : ''}Rp\u00a0${groupDigits(value.abs().round().toString())}';
 String dateValue(DateTime d) =>
     '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 String displayDate(String d) => d.split('-').reversed.join('/');
@@ -132,4 +132,17 @@ const categoryStyles = <String, CategoryStyle>{
   'Freelance': CategoryStyle(Icons.desktop_windows_outlined, Color(0xff038df7)),
   'Bonus': CategoryStyle(Icons.card_giftcard_rounded, Color(0xfff5b745)),
   'Investasi': CategoryStyle(Icons.trending_up_rounded, Color(0xff8c7cf6)),
+};
+
+const categorySymbols = <String, String>{
+  'Makanan': '🍜',
+  'Transportasi': '🛵',
+  'Pendidikan': '📚',
+  'Hiburan': '🎧',
+  'Kebutuhan': '🛍️',
+  'Lainnya': '✦',
+  'Gaji': '💼',
+  'Freelance': '🖥️',
+  'Bonus': '🎁',
+  'Investasi': '📈',
 };

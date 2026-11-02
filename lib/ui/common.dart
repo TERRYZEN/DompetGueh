@@ -28,7 +28,7 @@ class Panel extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(
         color: c.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: c.line),
         boxShadow: [
           BoxShadow(
@@ -45,14 +45,15 @@ class Panel extends StatelessWidget {
 
 class FormLabel extends StatelessWidget {
   final String text;
-  const FormLabel(this.text, {super.key});
+  final double size;
+  const FormLabel(this.text, {super.key, this.size = 11});
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(bottom: 8),
     child: Text(
       text,
       style: TextStyle(
-        fontSize: 12,
+        fontSize: size,
         fontWeight: FontWeight.w700,
         color: context.palette.dark
             ? const Color(0xffaab1c7)
@@ -68,11 +69,11 @@ class Eyebrow extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
     text,
-    style: const TextStyle(
+    style: TextStyle(
       fontSize: 10,
       fontWeight: FontWeight.w700,
       letterSpacing: 1.5,
-      color: Color(0xffa0a5b7),
+      color: context.palette.muted,
     ),
   );
 }
@@ -81,49 +82,80 @@ class Brand extends StatelessWidget {
   final bool large;
   const Brand({super.key, this.large = false});
   @override
-  Widget build(BuildContext context) => Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Container(
-        width: large ? 52 : 32,
-        height: large ? 52 : 32,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(large ? 16 : 12),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: large
-                ? const [primary, Color(0xff2f00ff)]
-                : const [Color(0xff0004f4), Color(0xff037ff4)],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: primary.withValues(alpha: .16),
-              blurRadius: 14,
-              offset: const Offset(0, 6),
+  Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final mobile = width <= 760;
+    final size = large
+        ? 52.0
+        : mobile
+        ? 32.0
+        : 37.0;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(
+              large
+                  ? 16
+                  : mobile
+                  ? 10
+                  : 12,
             ),
-          ],
-        ),
-        child: Text('D', style: heading(large ? 26 : 20, color: Colors.white)),
-      ),
-      if (!large) ...[
-        const SizedBox(width: 11),
-        Text.rich(
-          TextSpan(
-            style: heading(20),
-            children: const [
-              TextSpan(text: 'Dompet'),
-              TextSpan(
-                text: 'Gueh',
-                style: TextStyle(color: primary),
+            boxShadow: [
+              BoxShadow(
+                color: primary.withValues(alpha: .15),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
               ),
             ],
           ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(
+              large
+                  ? 16
+                  : mobile
+                  ? 10
+                  : 12,
+            ),
+            child: Image.asset(
+              'assets/images/logo.jpeg',
+              key: const Key('dg-logo'),
+              width: size,
+              height: size,
+              fit: BoxFit.cover,
+              excludeFromSemantics: true,
+            ),
+          ),
         ),
+        if (!large) ...[
+          SizedBox(width: mobile ? 8 : 10),
+          Text.rich(
+            TextSpan(
+              style: heading(
+                width < 360
+                    ? 17
+                    : mobile
+                    ? 19
+                    : 22,
+              ),
+              children: [
+                const TextSpan(text: 'Dompet'),
+                TextSpan(
+                  text: 'Gueh',
+                  style: TextStyle(
+                    color: context.palette.dark
+                        ? const Color(0xff4da9ff)
+                        : primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ],
-    ],
-  );
+    );
+  }
 }
 
 class SmallIconButton extends StatelessWidget {

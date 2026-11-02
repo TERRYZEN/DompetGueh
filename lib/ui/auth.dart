@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../core/controller.dart';
 import 'common.dart';
 import 'theme.dart';
+import 'visuals.dart';
 
 class AuthScreen extends StatefulWidget {
   final AppController controller;
@@ -226,19 +227,21 @@ class _AuthScreenState extends State<AuthScreen> {
                           const SizedBox(height: 10),
                           SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
-                              key: const Key('finish-recovery'),
-                              onPressed: busy ? null : open,
-                              child: Text(
-                                busy
-                                    ? 'Membuka...'
-                                    : 'Sudah Disimpan — Buka Aplikasi',
+                            child: PressScale(
+                              child: ElevatedButton(
+                                key: const Key('finish-recovery'),
+                                onPressed: busy ? null : open,
+                                child: Text(
+                                  busy
+                                      ? 'Membuka...'
+                                      : 'Sudah Disimpan — Buka Aplikasi',
+                                ),
                               ),
                             ),
                           ),
                         ] else ...[
                           if (mode == 'reset') ...[
-                            const FormLabel('Kode pemulihan'),
+                            const FormLabel('Kode pemulihan', size: 12),
                             TextField(
                               key: const Key('recovery-input'),
                               controller: _recovery,
@@ -279,7 +282,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                           const SizedBox(height: 17),
                           if (mode != 'unlock') ...[
-                            const FormLabel('Ulangi PIN baru'),
+                            const FormLabel('Ulangi PIN baru', size: 12),
                             TextField(
                               key: const Key('confirm-pin'),
                               controller: _confirm,
@@ -317,17 +320,19 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                           SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
-                              key: const Key('submit-pin'),
-                              onPressed: busy ? null : submit,
-                              child: Text(
-                                busy
-                                    ? 'Memproses...'
-                                    : mode == 'setup'
-                                    ? 'Simpan PIN'
-                                    : mode == 'reset'
-                                    ? 'Buat PIN Baru'
-                                    : 'Buka Aplikasi',
+                            child: PressScale(
+                              child: ElevatedButton(
+                                key: const Key('submit-pin'),
+                                onPressed: busy ? null : submit,
+                                child: Text(
+                                  busy
+                                      ? 'Memproses...'
+                                      : mode == 'setup'
+                                      ? 'Simpan PIN'
+                                      : mode == 'reset'
+                                      ? 'Buat PIN Baru'
+                                      : 'Buka Aplikasi',
+                                ),
                               ),
                             ),
                           ),

@@ -1,13 +1,15 @@
 name: dompetgueh_flutter
 description: DompetGueh offline dengan antarmuka Flutter dan penyimpanan privat Android.
 publish_to: none
-version: 2.0.0+2
+version: 2.1.0+3
 
 environment:
   sdk: '>=3.9.0 <4.0.0'
 
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
 
 dev_dependencies:
@@ -17,6 +19,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/images/logo.jpeg
     - assets/fonts/dmsans-OFL.txt
     - assets/fonts/manrope-OFL.txt
   fonts:
