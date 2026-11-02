@@ -1,0 +1,47 @@
+DOMPETGUEH FLUTTER 2.1.0 (versionCode 3)
+Tanggal pemeriksaan: 2 November 2026
+
+HASIL
+- APK release berhasil dibangun: 51.793.550 byte, sekitar 49,4 MiB.
+- Flutter 3.35.7, Dart 3.9.2, JDK 17, Android SDK/Build Tools 35.
+- Analisis Dart: No issues found.
+- 16 tes Flutter lolos. Cakupan: dashboard responsive, landscape, tema,
+  profil, simpan/hapus transaksi, draft form, format Rupiah, PIN/pemulihan,
+  kontrak MethodChannel, kegagalan simpan, dropdown keyboard, swipe dua arah,
+  serta animasi/clamping/aksesibilitas progress bar.
+- 31 pemeriksaan backend Java lolos melalui testReleaseUnitTest.
+- APK memuat kode Flutter native untuk arm64-v8a, armeabi-v7a, dan x86_64.
+- Semua layar menggunakan widget Flutter; tidak ada aset HTML/CSS/JavaScript.
+- APK release tidak meminta izin INTERNET.
+- Logo dalam APK cocok byte-for-byte dengan Logo(2).jpeg dari lampiran.
+- Launcher legacy dan adaptif menggunakan logo DG lampiran.
+- Sembilan bobot font asli dan kedua lisensi font disertakan.
+- APK Signature Scheme v2 terverifikasi dan ZIP alignment native 16 KiB lolos.
+
+KOMPATIBILITAS PEMBARUAN
+- Application ID tetap: id.terry.dompetgueh.offline.
+- versionName: 2.1.0; versionCode: 3 (APK Flutter sebelumnya: 2.0.0 / 2).
+- Sertifikat signing SHA-256 sama dengan APK Flutter sebelumnya:
+  d3bd05d372186d99f757fcf2bb5712e8a249ba95a154e151009e897cc94cafce
+- MainActivity.java, FinanceEngine.java, dan keystore sama byte-for-byte
+  dengan source Flutter sebelumnya.
+- SharedPreferences: dompetgueh_data / database; dompetgueh_flutter_ui.
+- Pasang sebagai update tanpa uninstall atau menghapus data.
+- Kompatibilitas ini berlaku untuk APK sebelumnya dengan ID dan kunci yang
+  sama; belum diuji dengan instalasi langsung pada perangkat Android.
+
+PEMERIKSAAN TAMPILAN
+- Desain merujuk ZIP DompetGueh_v2.1.0_Fix(1).zip terbaru.
+- Render dashboard terang/gelap, histori, PIN, dan dropdown telah ditinjau.
+- Pada lebar 390 piksel, header 390 x 69; overview x16/y271/lebar358;
+  kartu sisa anggaran x37/y413/316 x 109; dua kartu ringkasan x37/x200,
+  y534/lebar153; dock x12/y765/366 x 67 cocok dengan sumber.
+- Tinggi overview Flutter 386,06 piksel, sumber 386,046875 piksel.
+- UI, animasi, progress bar, dan fungsi dibangun ulang mengikuti sumber.
+  Flutter dan browser mempunyai mesin render berbeda; hasil piksel 100%
+  pada semua perangkat belum dapat dijamin.
+- Belum diuji lewat emulator Android atau HP fisik.
+
+PANDUAN
+README.md memuat instalasi, build, lokasi pengeditan, dan kunci update.
+APK_SHA256.txt memuat checksum APK yang disertakan terpisah.
