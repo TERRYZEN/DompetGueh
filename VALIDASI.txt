@@ -1,3 +1,5 @@
+ARSIP HISTORIS — hasil sebelum penyelesaian konflik merge; bukan validasi source saat ini.
+
 DOMPETGUEH FLUTTER 2.1.0 (versionCode 3)
 Tanggal pemeriksaan: 2 November 2026
 

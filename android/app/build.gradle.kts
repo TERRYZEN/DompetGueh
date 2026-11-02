@@ -1,7 +1,20 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
+}
+
+val signingProperties = Properties()
+val signingPropertiesFile = rootProject.file("key.properties")
+if (signingPropertiesFile.exists()) {
+    signingPropertiesFile.inputStream().use { signingProperties.load(it) }
+    listOf("storeFile", "storePassword", "keyAlias", "keyPassword").forEach { key ->
+        require(!signingProperties.getProperty(key).isNullOrBlank()) {
+            "Missing $key in android/key.properties"
+        }
+    }
 }
 
 android {
@@ -26,17 +39,20 @@ android {
     }
 
     signingConfigs {
-        create("localRelease") {
-            storeFile = rootProject.file("signing/dompetgueh.jks")
-            storePassword = "dompetgueh-offline"
-            keyAlias = "dompetgueh"
-            keyPassword = "dompetgueh-offline"
+        if (signingPropertiesFile.exists()) {
+            create("localRelease") {
+                storeFile = rootProject.file(signingProperties.getProperty("storeFile"))
+                storePassword = signingProperties.getProperty("storePassword")
+                keyAlias = signingProperties.getProperty("keyAlias")
+                keyPassword = signingProperties.getProperty("keyPassword")
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("localRelease")
+            // Without key.properties, release builds are unsigned.
+            signingConfig = signingConfigs.findByName("localRelease")
             isMinifyEnabled = false
             isShrinkResources = false
         }

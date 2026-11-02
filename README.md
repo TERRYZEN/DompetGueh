@@ -27,17 +27,15 @@ masker launcher Android masing-masing perangkat.
 
 ## Memasang APK dan memperbarui versi sebelumnya
 
-Pasang `DompetGueh_Flutter_v2.1.0.apk` langsung di atas APK DompetGueh sebelumnya
-yang dibuat dalam percakapan ini. Jangan uninstall atau hapus data terlebih
-dahulu agar transaksi, nama, PIN, dan pengaturan tersimpan.
-
-Kompatibilitas update diperiksa terhadap APK Flutter v2.0.0 sebelumnya:
+Untuk memperbarui aplikasi yang terpasang, build APK dengan kunci signing yang
+sama dan versionCode yang lebih tinggi. Jangan uninstall atau hapus data.
+Konfigurasi yang dipertahankan dari source v2.1.0:
 
 | Komponen | Nilai |
 | --- | --- |
 | Application ID | `id.terry.dompetgueh.offline` |
 | Versi baru | `2.1.0`, versionCode `3` (sebelumnya `2`) |
-| Sertifikat signing | Sama dengan APK sebelumnya |
+| Sertifikat signing | Ditentukan oleh kunci saat membangun APK |
 | Data keuangan/PIN | SharedPreferences `dompetgueh_data`, key `database` |
 | Tema/sembunyikan angka | SharedPreferences `dompetgueh_flutter_ui` |
 | Android minimum | Android 8.0 / API 26 |
@@ -64,7 +62,7 @@ native iOS/web/desktop belum tersedia.
    flutter run
    ```
 
-4. Buat APK release yang ditandatangani:
+4. Konfigurasikan kunci signing sesuai bagian di bawah, lalu buat APK release:
 
    ```bash
    flutter build apk --release
@@ -99,14 +97,26 @@ Android; `lib/main.dart` saja tidak cukup.
 | `android/app/src/main/java/id/terry/dompetgueh/offline/FinanceEngine.java` | Aturan keuangan, validasi, hash PIN |
 | `android/app/src/main/java/id/terry/dompetgueh/offline/MainActivity.java` | MethodChannel dan penyimpanan privat |
 
-## Kunci signing untuk update berikutnya
+## Signing APK release
 
-Kunci asli ada di `android/signing/dompetgueh.jks`.
-Alias: `dompetgueh`; password keystore/key: `dompetgueh-offline`.
-Simpan source dan kunci ini secara pribadi. Jangan unggah ke repositori publik.
-Gunakan kunci yang sama dan naikkan versionCode pada `pubspec.yaml` untuk
-pembaruan berikutnya. Mengganti kunci membuat APK tidak dapat menggantikan
-instalasi sebelumnya secara langsung.
+Kunci signing tidak disertakan dalam proyek yang siap diunggah ke GitHub.
+Simpan `dompetgueh.jks` dari arsip asli di lokasi pribadi. Jangan unggah kunci,
+password, atau `android/key.properties` ke repository. Bila kunci atau password
+sudah pernah masuk ke repository publik, anggap kunci tersebut terpapar.
+
+1. Salin `android/key.properties.example` menjadi `android/key.properties`.
+2. Isi `storeFile` dengan path absolut ke file keystore, lalu isi alias dan
+   password sesuai kunci Anda. File ini sudah tercantum di `.gitignore`.
+3. Jalankan `flutter build apk --release`. Tanpa `key.properties`, konfigurasi
+   release tidak ditandatangani dan APK tersebut tidak dapat dipasang sebagai
+   pembaruan.
+
+Untuk memperbarui instalasi lama tanpa menghapus data, gunakan application ID
+`id.terry.dompetgueh.offline` dan kunci signing yang sama dengan APK lama.
+`versionCode` juga harus lebih tinggi daripada versi yang sudah terpasang;
+`2.1.0+3` hanya dapat memperbarui versi dengan versionCode kurang dari 3.
+Jangan uninstall atau hapus data. Perubahan kunci memerlukan mekanisme rotasi
+kunci yang didukung Android atau distribusi sebagai aplikasi baru.
 
 ## Pengujian
 
@@ -117,13 +127,7 @@ cd android
 ./gradlew :app:testReleaseUnitTest
 ```
 
-16 tes Flutter mencakup kontrak MethodChannel, alur PIN/pemulihan, simpan/hapus
-transaksi, draft, format Rupiah, tema, kegagalan simpan, responsivitas
-320/360/390/430/800 piksel dan landscape, swipe dua arah, dropdown keyboard,
-serta animasi dan batas progress bar. Backend Java memiliki 31 pemeriksaan
-validasi, perhitungan, persistensi, hash PIN, dan pemulihan.
-
 Tes widget menggunakan fixture; tes Java menguji FinanceEngine yang sama dengan
-APK. Rincian hasil build dan validasi tersedia pada `VALIDASI.txt`, sedangkan
-checksum APK pada `APK_SHA256.txt`. Pengujian langsung pada emulator Android
-atau HP fisik belum dilakukan.
+aplikasi. Jalankan pengujian tersebut setelah menyelesaikan konflik merge dan
+sebelum membuat pull request. Hasil pemeriksaan historis di `VALIDASI.txt`
+dan `APK_SHA256.txt` berlaku untuk APK lama, bukan untuk source hasil merge ini.
