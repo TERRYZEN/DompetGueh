@@ -74,6 +74,11 @@ Internet diperlukan saat mengunduh alat build/dependensi. Setelah terpasang,
 APK release bekerja offline. Seluruh folder proyek dibutuhkan, termasuk folder
 Android; `lib/main.dart` saja tidak cukup.
 
+## Screenshot
+
+![image] (/image/ss1.jpeg)
+![image] (/image/ss2.jpeg)
+
 ## Lokasi pengeditan
 
 | File | Isi |
