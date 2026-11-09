@@ -76,8 +76,8 @@ Android; `lib/main.dart` saja tidak cukup.
 
 ## Screenshot
 
-![image] (/image/ss1.jpeg)
-![image] (/image/ss2.jpeg)
+![image] (/image/ss1.png)
+![image] (/image/ss2.png)
 
 ## Lokasi pengeditan
 
